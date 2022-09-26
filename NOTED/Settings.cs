@@ -43,6 +43,16 @@ namespace NOTED
                 settings = new Settings();
                 Save(settings);
             }
+            else
+            {
+                foreach (Duty duty in settings.Duties.Values)
+                {
+                    foreach (Note note in duty.Notes) 
+                    {
+                        note.Jobs.CalculateText();
+                    }
+                }
+            }
 
             return settings;
         }

@@ -203,6 +203,8 @@ namespace NOTED.Windows
 
                     if (count > 1)
                     {
+                        string moveHelp = "\nIf you have multiple notes for the same duty that are applicable, the first one will be used.";
+
                         ImGui.SameLine(); DrawHelper.Tab(5);
                         ImGui.PushFont(UiBuilder.IconFont);
                         if (ImGui.Button(FontAwesomeIcon.ArrowUp.ToIconString()))
@@ -220,7 +222,7 @@ namespace NOTED.Windows
                              }
                         }
                         ImGui.PopFont();
-                        DrawHelper.SetTooltip("Move Up");
+                        DrawHelper.SetTooltip("Move Up" + moveHelp);
                     
                         ImGui.SameLine(); DrawHelper.Tab(5);
                         ImGui.PushFont(UiBuilder.IconFont);
@@ -239,7 +241,7 @@ namespace NOTED.Windows
                             }
                         }
                         ImGui.PopFont();
-                        DrawHelper.SetTooltip("Move Down");
+                        DrawHelper.SetTooltip("Move Down" + moveHelp);
                     }
                 }
             }
@@ -270,9 +272,10 @@ namespace NOTED.Windows
             {
                 if (SelectedDuty != null)
                 {
-                    foreach (Note note in SelectedDuty.Notes)
+                    for (int i = 0; i < SelectedDuty.Notes.Count; i++)
                     {
-                        if (ImGui.Selectable(note.Title, note == SelectedNote))
+                        Note note = SelectedDuty.Notes[i];
+                        if (ImGui.Selectable(note.Title + "##note" + i.ToString(), note == SelectedNote))
                         {
                             SelectedNote = note;
                         }
@@ -296,6 +299,7 @@ namespace NOTED.Windows
                     ImGui.PushFont(UiBuilder.IconFont);
                     if (ImGui.Button(FontAwesomeIcon.Wrench.ToIconString()))
                     {
+                        Plugin.ShowJobsDataWindow(SelectedNote);
                     }
                     ImGui.PopFont();
 

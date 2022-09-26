@@ -7,6 +7,7 @@ using Dalamud.Game.Gui;
 using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
+using NOTED.Models;
 using NOTED.Windows;
 using System;
 using System.Reflection;
@@ -33,6 +34,7 @@ namespace NOTED
 
         private static WindowSystem _windowSystem = null!;
         private static SettingsWindow _settingsWindow = null!;
+        private static JobsDataWindow _jobsDataWindow = null!;
 
         public Plugin(
             ClientState clientState,
@@ -105,9 +107,18 @@ namespace NOTED
         private void CreateWindows()
         {
             _settingsWindow = new SettingsWindow("NOTED v" + Version);
+            _jobsDataWindow = new JobsDataWindow("Jobs");
 
             _windowSystem = new WindowSystem("NOTED_Windows");
             _windowSystem.AddWindow(_settingsWindow);
+            _windowSystem.AddWindow(_jobsDataWindow);
+        }
+
+        public static void ShowJobsDataWindow(Note note)
+        {
+            _jobsDataWindow.WindowName = "Configure \"" + note.Title + "\" jobs";
+            _jobsDataWindow.Note = note;
+            _jobsDataWindow.IsOpen = true;
         }
 
         private unsafe void Update(Framework framework)

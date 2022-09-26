@@ -12,9 +12,9 @@ namespace NOTED.Models
         public string Text {
             get
             {
-                if (_text.Length <= 32) { return _text; }
+                if (_text.Length <= 50) { return _text; }
 
-                return _text.Substring(0, 28) + " ...";
+                return _text.Substring(0, 46) + " ...";
             }
         }
 
@@ -26,6 +26,8 @@ namespace NOTED.Models
 
             foreach (JobRoles role in roles)
             {
+                if (role == JobRoles.Unknown) { continue; }
+
                 int count = JobsHelper.JobsByRole[role].Count;
                 List<bool> list = new List<bool>(count);
 
@@ -61,6 +63,15 @@ namespace NOTED.Models
             CalculateText();
         }
 
+        public void SetJobEnabled(JobRoles role, int index, bool value)
+        {
+            if (Map[role].Count > index)
+            {
+                Map[role][index] = value;
+                CalculateText();
+            }
+        }
+
         public bool IsEnabled(JobRoles role, int index)
         {
             if (Map.TryGetValue(role, out List<bool>? list) && list != null)
@@ -76,13 +87,15 @@ namespace NOTED.Models
             return false;
         }
 
-        private void CalculateText()
+        public void CalculateText()
         {
             List<string> jobs = new List<string>();
             JobRoles[] roles = (JobRoles[])Enum.GetValues(typeof(JobRoles));
 
             foreach (JobRoles role in roles)
             {
+                if (role == JobRoles.Unknown) { continue; }
+
                 List<string> jobsInRole = new List<string>();
                 int count = JobsHelper.JobsByRole[role].Count;
 
