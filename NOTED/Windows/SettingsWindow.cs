@@ -175,6 +175,7 @@ namespace NOTED.Windows
                 ImGui.PushFont(UiBuilder.IconFont);
                 if (ImGui.Button(FontAwesomeIcon.Download.ToIconString()))
                 {
+                    ImportNoteFromClipboard();
                 }
                 ImGui.PopFont();
                 DrawHelper.SetTooltip("Imports a note from the clipboard");
@@ -199,6 +200,8 @@ namespace NOTED.Windows
                     ImGui.PushFont(UiBuilder.IconFont);
                     if (ImGui.Button(FontAwesomeIcon.Upload.ToIconString()))
                     {
+                        string exportString = ImportExportHelper.GenerateExportString(SelectedDuty, SelectedNote);
+                        ImGui.SetClipboardText(exportString);
                     }
                     ImGui.PopFont();
                     DrawHelper.SetTooltip("Export to the clipboard");
@@ -251,6 +254,36 @@ namespace NOTED.Windows
                 }
             }
             ImGui.EndChild();
+        }
+
+        private void ImportNoteFromClipboard()
+        {
+            string importString = ImGui.GetClipboardText();
+            var (id, dutyName, note) = ImportExportHelper.ImportNote(importString);
+
+            if (id > 0 && note != null)
+            {
+                Duty? duty = null;
+
+                if (Settings.Duties.TryGetValue(id, out Duty? d) && d != null)
+                {
+                    duty = d;
+                }
+                else if (dutyName != null)
+                {
+                    duty = new Duty(id, dutyName);
+                    Settings.Duties.Add(id, duty);
+                }
+
+                if (duty != null)
+                {
+                    duty.Notes.Add(note);
+                    Settings.Save(Settings);
+
+                    SelectedDuty = duty;
+                    SelectedNote = note;
+                }
+            }
         }
 
         private void DrawDutyList()
