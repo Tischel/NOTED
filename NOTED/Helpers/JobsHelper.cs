@@ -4,6 +4,73 @@ namespace NOTED.Helpers
 {
     internal class JobsHelper
     {
+        public static JobRoles RoleForJob(uint jobId)
+        {
+            if (JobRolesMap.TryGetValue(jobId, out var role))
+            {
+                return role;
+            }
+
+            return JobRoles.Unknown;
+        }
+
+        public static Dictionary<uint, JobRoles> JobRolesMap = new Dictionary<uint, JobRoles>()
+        {
+            // tanks
+            [JobIDs.GLA] = JobRoles.Tank,
+            [JobIDs.MRD] = JobRoles.Tank,
+            [JobIDs.PLD] = JobRoles.Tank,
+            [JobIDs.WAR] = JobRoles.Tank,
+            [JobIDs.DRK] = JobRoles.Tank,
+            [JobIDs.GNB] = JobRoles.Tank,
+
+            // healers
+            [JobIDs.CNJ] = JobRoles.Healer,
+            [JobIDs.WHM] = JobRoles.Healer,
+            [JobIDs.SCH] = JobRoles.Healer,
+            [JobIDs.AST] = JobRoles.Healer,
+            [JobIDs.SGE] = JobRoles.Healer,
+
+            // melee dps
+            [JobIDs.PGL] = JobRoles.DPSMelee,
+            [JobIDs.LNC] = JobRoles.DPSMelee,
+            [JobIDs.ROG] = JobRoles.DPSMelee,
+            [JobIDs.MNK] = JobRoles.DPSMelee,
+            [JobIDs.DRG] = JobRoles.DPSMelee,
+            [JobIDs.NIN] = JobRoles.DPSMelee,
+            [JobIDs.SAM] = JobRoles.DPSMelee,
+            [JobIDs.RPR] = JobRoles.DPSMelee,
+
+            // ranged phys dps
+            [JobIDs.ARC] = JobRoles.DPSRanged,
+            [JobIDs.BRD] = JobRoles.DPSRanged,
+            [JobIDs.MCH] = JobRoles.DPSRanged,
+            [JobIDs.DNC] = JobRoles.DPSRanged,
+
+            // ranged magic dps
+            [JobIDs.THM] = JobRoles.DPSCaster,
+            [JobIDs.ACN] = JobRoles.DPSCaster,
+            [JobIDs.BLM] = JobRoles.DPSCaster,
+            [JobIDs.SMN] = JobRoles.DPSCaster,
+            [JobIDs.RDM] = JobRoles.DPSCaster,
+            [JobIDs.BLU] = JobRoles.DPSCaster,
+
+            // crafters
+            [JobIDs.CRP] = JobRoles.Crafter,
+            [JobIDs.BSM] = JobRoles.Crafter,
+            [JobIDs.ARM] = JobRoles.Crafter,
+            [JobIDs.GSM] = JobRoles.Crafter,
+            [JobIDs.LTW] = JobRoles.Crafter,
+            [JobIDs.WVR] = JobRoles.Crafter,
+            [JobIDs.ALC] = JobRoles.Crafter,
+            [JobIDs.CUL] = JobRoles.Crafter,
+
+            // gatherers
+            [JobIDs.MIN] = JobRoles.Gatherer,
+            [JobIDs.BOT] = JobRoles.Gatherer,
+            [JobIDs.FSH] = JobRoles.Gatherer,
+        };
+
         public static Dictionary<JobRoles, List<uint>> JobsByRole = new Dictionary<JobRoles, List<uint>>()
         {
             // tanks

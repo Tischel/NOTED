@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Dalamud.Game.ClientState.Objects.SubKinds;
+using NOTED.Helpers;
+using System;
 using System.Collections.Generic;
 
 namespace NOTED.Models
 {
-    public class Duty: IEquatable<Duty>
+    public class Duty
     {
         public uint ID;
         public string Name;
@@ -16,9 +18,33 @@ namespace NOTED.Models
             Notes = new List<Note>();
         }
 
-        public bool Equals(Duty? other)
+        public Note? GetActiveNote()
         {
-            return ID == other?.ID;
+            PlayerCharacter? player = Plugin.ClientState.LocalPlayer;
+            if (player == null) { return null; }
+
+            uint jobId = player.ClassJob.Id;
+            Note? firstNote = null;
+
+            foreach (Note note in Notes)
+            {
+                if (note.Jobs.IsEmpty && firstNote == null)
+                {
+                    firstNote = note;
+                    continue;
+                }
+
+                JobRoles role = JobsHelper.RoleForJob(jobId);
+                int index = JobsHelper.JobsByRole[role].IndexOf(jobId);
+
+                if (note.Jobs.IsEnabled(role, index))
+                {
+                    return note;
+                }
+            }
+
+            return firstNote;
         }
+
     }
 }

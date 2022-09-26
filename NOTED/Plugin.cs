@@ -35,6 +35,10 @@ namespace NOTED
         private static WindowSystem _windowSystem = null!;
         private static SettingsWindow _settingsWindow = null!;
         private static JobsDataWindow _jobsDataWindow = null!;
+        private static NoteWindow _noteWindow = null!;
+
+        private static ushort _prevTerritoryID = 0;
+        private static Duty? _activeDuty = null!;
 
         public Plugin(
             ClientState clientState,
@@ -66,7 +70,6 @@ namespace NOTED
 
             Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "0.1.0.0";
 
-            Framework.Update += Update;
             UiBuilder.Draw += Draw;
             UiBuilder.OpenConfigUi += OpenConfigUi;
 
@@ -108,10 +111,14 @@ namespace NOTED
         {
             _settingsWindow = new SettingsWindow("NOTED v" + Version);
             _jobsDataWindow = new JobsDataWindow("Jobs");
+            _noteWindow = new NoteWindow("Note");
 
             _windowSystem = new WindowSystem("NOTED_Windows");
             _windowSystem.AddWindow(_settingsWindow);
             _windowSystem.AddWindow(_jobsDataWindow);
+            _windowSystem.AddWindow(_noteWindow);
+
+            _noteWindow.IsOpen = true;
         }
 
         public static void ShowJobsDataWindow(Note note)
@@ -121,14 +128,46 @@ namespace NOTED
             _jobsDataWindow.IsOpen = true;
         }
 
-        private unsafe void Update(Framework framework)
+        public static void EditNote(Note? note)
         {
+            if (note == null) { return; }
 
+            if (Settings.Duties.TryGetValue(ClientState.TerritoryType, out Duty? duty) && duty != null)
+            {
+                if (duty.Notes.Contains(note))
+                {
+                    _settingsWindow.SelectedDuty = duty;
+                    _settingsWindow.SelectedNote = note;
+                    _settingsWindow.NeedsFocus = true;
+                    _settingsWindow.IsOpen = true;
+                }
+            }
         }
 
         private unsafe void Draw()
         {
             if (Settings == null || ClientState.LocalPlayer == null) return;
+
+            // detect territory change
+            ushort territory = ClientState.TerritoryType;
+            if (territory != _prevTerritoryID)
+            {
+                _activeDuty = null;
+                _prevTerritoryID = territory;
+
+                if (Settings.Duties.TryGetValue(territory, out Duty? duty) && duty != null)
+                {
+                    _activeDuty = duty;
+                }
+            }
+
+            // set note
+            if (_activeDuty != null)
+            {
+                _noteWindow.Note = _activeDuty.GetActiveNote();
+            }
+
+            _noteWindow.IsOpen = Settings.Preview || _noteWindow.Note != null;
             _windowSystem?.Draw();
         }
 
@@ -145,13 +184,12 @@ namespace NOTED
             }
 
             Settings.Save(Settings);
-            
+
             _windowSystem.RemoveAllWindows();
 
             CommandManager.RemoveHandler("/noted");
             CommandManager.RemoveHandler("/noted toggle");
 
-            Framework.Update -= Update;
             UiBuilder.Draw -= Draw;
             UiBuilder.OpenConfigUi -= OpenConfigUi;
         }

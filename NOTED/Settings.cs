@@ -15,8 +15,8 @@ namespace NOTED
         public bool Locked = false;
         public bool Preview = false;
         public bool RightClickToEdit = true;
-        public Vector4 LockedBackgroundColor = new Vector4(0f, 0f, 0f, 0.75f);
-        public Vector4 UnlockedBackgroundColor = new Vector4(0f, 0f, 0f, 0.2f);
+        public Vector4 LockedBackgroundColor = new Vector4(0f, 0f, 0f, 0.25f);
+        public Vector4 UnlockedBackgroundColor = new Vector4(0f, 0f, 0f, 0.75f);
 
         #region load / save
         private static string JsonPath = Path.Combine(Plugin.PluginInterface.GetPluginConfigDirectory(), "Settings.json");
@@ -49,7 +49,7 @@ namespace NOTED
                 {
                     foreach (Note note in duty.Notes) 
                     {
-                        note.Jobs.CalculateText();
+                        note.Jobs.Update();
                     }
                 }
             }

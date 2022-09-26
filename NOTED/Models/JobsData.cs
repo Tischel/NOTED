@@ -18,6 +18,9 @@ namespace NOTED.Models
             }
         }
 
+        private bool _isEmpty = true;
+        public bool IsEmpty => _isEmpty;
+
         public JobsData()
         {
             Map = new Dictionary<JobRoles, List<bool>>();
@@ -60,7 +63,7 @@ namespace NOTED.Models
                 Map[role][i] = value;
             }
 
-            CalculateText();
+            Update();
         }
 
         public void SetJobEnabled(JobRoles role, int index, bool value)
@@ -68,7 +71,7 @@ namespace NOTED.Models
             if (Map[role].Count > index)
             {
                 Map[role][index] = value;
-                CalculateText();
+                Update();
             }
         }
 
@@ -87,7 +90,7 @@ namespace NOTED.Models
             return false;
         }
 
-        public void CalculateText()
+        public void Update()
         {
             List<string> jobs = new List<string>();
             JobRoles[] roles = (JobRoles[])Enum.GetValues(typeof(JobRoles));
@@ -122,9 +125,12 @@ namespace NOTED.Models
             if (jobs.Count == 0)
             {
                 _text = "All";
-            } else
+                _isEmpty = true;
+            }
+            else
             {
                 _text = string.Join(", ", jobs);
+                _isEmpty = false;
             }
         }
     }

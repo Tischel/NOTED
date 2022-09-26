@@ -25,6 +25,9 @@ namespace NOTED.Windows
         private string _newNoteDutyName = "";
         private string _newNoteTitle = "";
 
+        private bool _needsFocusOnNewNote = false;
+        public bool NeedsFocus = false;
+
         private List<TerritoryType> _duties = new List<TerritoryType>();
         private List<TerritoryType> _searchResult = new List<TerritoryType>();
 
@@ -125,6 +128,7 @@ namespace NOTED.Windows
 
             SelectedDuty = duty;
             SelectedNote = newNote;
+            NeedsFocus = true;
         }
 
         private void DrawGeneralSettings()
@@ -162,6 +166,7 @@ namespace NOTED.Windows
                     _newNoteDutyID = 0;
                     _newNoteTitle = "New Note";
                     _addingNote = true;
+                    _needsFocusOnNewNote = true;
                 }
                 ImGui.PopFont();
                 DrawHelper.SetTooltip("Adds a new empty note");
@@ -258,6 +263,7 @@ namespace NOTED.Windows
                     {
                         SelectedDuty = duty;
                         SelectedNote = duty.Notes.Count > 0 ? duty.Notes[0] : null;
+                        NeedsFocus = SelectedNote != null;
                     }
                 }
             }
@@ -278,6 +284,7 @@ namespace NOTED.Windows
                         if (ImGui.Selectable(note.Title + "##note" + i.ToString(), note == SelectedNote))
                         {
                             SelectedNote = note;
+                            NeedsFocus = true;
                         }
                     }
                 }
@@ -294,7 +301,13 @@ namespace NOTED.Windows
                 if (SelectedNote != null) {
                     ImGui.PushItemWidth(398 * _scale);
                     ImGui.InputText("##Title", ref SelectedNote.Title, 64);
-                    ImGui.InputTextMultiline("##Text", ref SelectedNote.Text, 99999, new Vector2(398 * _scale, 420 * _scale));
+
+                    if (NeedsFocus)
+                    {
+                        ImGui.SetKeyboardFocusHere();
+                        NeedsFocus = false;
+                    }
+                    ImGui.InputTextMultiline("##Text", ref SelectedNote.Text, 99999, new Vector2(398 * _scale, 420 * _scale), ImGuiInputTextFlags.AutoSelectAll);
 
                     ImGui.PushFont(UiBuilder.IconFont);
                     if (ImGui.Button(FontAwesomeIcon.Wrench.ToIconString()))
@@ -326,6 +339,12 @@ namespace NOTED.Windows
 
             if (ImGui.BeginPopupModal("New Note##NOTED", ref p_open, ImGuiWindowFlags.NoSavedSettings | ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoMove))
             {
+                if (_needsFocusOnNewNote)
+                {
+                    ImGui.SetKeyboardFocusHere();
+                    _needsFocusOnNewNote = false;
+                }
+
                 ImGui.InputText("Title", ref _newNoteTitle, 64);
 
                 ImGui.NewLine();
