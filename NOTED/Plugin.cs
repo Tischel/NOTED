@@ -153,6 +153,7 @@ namespace NOTED
             if (territory != _prevTerritoryID)
             {
                 _activeDuty = null;
+                _noteWindow.Note = null;
                 _prevTerritoryID = territory;
 
                 if (Settings.Duties.TryGetValue(territory, out Duty? duty) && duty != null)
