@@ -7,6 +7,7 @@ using Dalamud.Game.Gui;
 using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
+using ImGuiNET;
 using NOTED.Models;
 using NOTED.Windows;
 using System;
@@ -38,8 +39,9 @@ namespace NOTED
         private static NoteWindow _noteWindow = null!;
 
         private static ushort _prevTerritoryID = 0;
-        private static Duty? _activeDuty = null!;
+        private static Duty? _activeDuty = null;
         private static bool _forceHide = false;
+        private static Note? _prevNote = null;
 
         public Plugin(
             ClientState clientState,
@@ -163,6 +165,7 @@ namespace NOTED
             {
                 _activeDuty = null;
                 _noteWindow.Note = null;
+                _prevNote = null;
                 _forceHide = false;
                 _prevTerritoryID = territory;
 
@@ -175,7 +178,16 @@ namespace NOTED
             // set note
             if (_activeDuty != null)
             {
-                _noteWindow.Note = _activeDuty.GetActiveNote();
+                Note? activeNote = _activeDuty.GetActiveNote();
+
+                // auto copy?
+                if (activeNote != null && activeNote != _prevNote && activeNote.AutoCopy)
+                {
+                    ImGui.SetClipboardText(activeNote.Text);
+                }
+
+                _prevNote = activeNote;
+                _noteWindow.Note = activeNote;
             }
 
             _noteWindow.IsOpen = Settings.Preview || (_noteWindow.Note != null && !_forceHide);

@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-
-namespace NOTED.Models
+﻿namespace NOTED.Models
 {
     public class Note
     {
         public string Title;
         public string Text;
         public JobsData Jobs;
+        public bool Enabled = true;
+        public bool AutoCopy = false;
 
         public Note()
         {

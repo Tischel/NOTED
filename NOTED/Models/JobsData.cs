@@ -12,9 +12,9 @@ namespace NOTED.Models
         public string Text {
             get
             {
-                if (_text.Length <= 50) { return _text; }
+                if (_text.Length <= 24) { return _text; }
 
-                return _text.Substring(0, 46) + " ...";
+                return _text.Substring(0, 20) + " ...";
             }
         }
 

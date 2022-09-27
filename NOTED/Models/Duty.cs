@@ -28,6 +28,8 @@ namespace NOTED.Models
 
             foreach (Note note in Notes)
             {
+                if (!note.Enabled) { continue; }
+
                 if (note.Jobs.IsEmpty && firstNote == null)
                 {
                     firstNote = note;

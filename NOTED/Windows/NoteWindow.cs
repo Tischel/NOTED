@@ -54,9 +54,17 @@ namespace NOTED.Windows
             ImGui.TextWrapped(text);
             ImGui.PopTextWrapPos();
 
-            if (Settings.RightClickToEdit && ImGui.IsMouseClicked(ImGuiMouseButton.Right))
+            if (ImGui.IsWindowHovered())
             {
-                Plugin.EditNote(Note);
+                if (Settings.LeftClickToCopy && ImGui.IsMouseClicked(ImGuiMouseButton.Left))
+                {
+                    ImGui.SetClipboardText(text);
+                }
+
+                if (Settings.RightClickToEdit && ImGui.IsMouseClicked(ImGuiMouseButton.Right))
+                {
+                    Plugin.EditNote(Note);
+                }
             }
         }
     }

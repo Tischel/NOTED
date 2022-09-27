@@ -138,19 +138,23 @@ namespace NOTED.Windows
                 ImGui.Checkbox("Locked", ref Settings.Locked);
                 DrawHelper.SetTooltip("Untick to be able to move and resize the notes.");
 
-                DrawHelper.Tab();
+                DrawHelper.Tab(0.6f);
                 ImGui.Checkbox("Preview", ref Settings.Preview);
                 DrawHelper.SetTooltip("Tick to preview a dummy note and be able to move it and resize it.");
 
-                DrawHelper.Tab();
+                DrawHelper.Tab(0.6f);
+                ImGui.Checkbox("Left Click to Copy", ref Settings.LeftClickToCopy);
+                DrawHelper.SetTooltip("When enabled, left clicking on a note will copy its contents to the clipboard.");
+
+                DrawHelper.Tab(0.6f);
                 ImGui.Checkbox("Right Click to Edit", ref Settings.RightClickToEdit);
                 DrawHelper.SetTooltip("When enabled, right clicking on a note will open the configuration window to edit it.");
 
-                DrawHelper.Tab();
-                ImGui.ColorEdit4("Locked Backround Color", ref Settings.LockedBackgroundColor, ImGuiColorEditFlags.NoInputs);
+                DrawHelper.Tab(0.6f);
+                ImGui.ColorEdit4("Locked Color", ref Settings.LockedBackgroundColor, ImGuiColorEditFlags.NoInputs);
 
-                DrawHelper.Tab();
-                ImGui.ColorEdit4("Unlocked Backround Color", ref Settings.UnlockedBackgroundColor, ImGuiColorEditFlags.NoInputs);
+                DrawHelper.Tab(0.6f);
+                ImGui.ColorEdit4("Unlocked Color", ref Settings.UnlockedBackgroundColor, ImGuiColorEditFlags.NoInputs);
             }
             ImGui.EndChild();
         }
@@ -159,7 +163,7 @@ namespace NOTED.Windows
         {
             ImGui.BeginChild("##Buttons", new Vector2(150 * _scale, 37 * _scale), true);
             {
-                DrawHelper.Tab(1.1f);
+                DrawHelper.Tab(1.2f);
                 ImGui.PushFont(UiBuilder.IconFont);
                 if (ImGui.Button(FontAwesomeIcon.Plus.ToIconString()))
                 {
@@ -314,11 +318,16 @@ namespace NOTED.Windows
                     for (int i = 0; i < SelectedDuty.Notes.Count; i++)
                     {
                         Note note = SelectedDuty.Notes[i];
+                        uint color = note.Enabled ? 0xFFFFFFFF : 0xFF666666;
+                        ImGui.PushStyleColor(ImGuiCol.Text, color);
+
                         if (ImGui.Selectable(note.Title + "##note" + i.ToString(), note == SelectedNote))
                         {
                             SelectedNote = note;
                             NeedsFocus = true;
                         }
+
+                        ImGui.PopStyleColor();
                     }
                 }
             }
@@ -342,6 +351,13 @@ namespace NOTED.Windows
                     }
                     ImGui.InputTextMultiline("##Text", ref SelectedNote.Text, 99999, new Vector2(398 * _scale, 420 * _scale), ImGuiInputTextFlags.AutoSelectAll);
 
+                    ImGui.Checkbox("Enabled", ref SelectedNote.Enabled);
+
+                    ImGui.SameLine();
+                    ImGui.Checkbox("Auto-Copy", ref SelectedNote.AutoCopy);
+                    DrawHelper.SetTooltip("When enabled, the contents of the note will be automatically copied to the clipboard when it appears.");
+
+                    DrawHelper.Tab();
                     ImGui.PushFont(UiBuilder.IconFont);
                     if (ImGui.Button(FontAwesomeIcon.Wrench.ToIconString()))
                     {
