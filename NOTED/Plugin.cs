@@ -39,6 +39,7 @@ namespace NOTED
 
         private static ushort _prevTerritoryID = 0;
         private static Duty? _activeDuty = null!;
+        private static bool _forceHide = false;
 
         public Plugin(
             ClientState clientState,
@@ -104,7 +105,15 @@ namespace NOTED
 
         private void PluginCommand(string command, string arguments)
         {
-            _settingsWindow.IsOpen = !_settingsWindow.IsOpen;
+            if (arguments == "toggle")
+            {
+                _forceHide = !_forceHide;
+            } 
+            else
+            {
+                _settingsWindow.IsOpen = !_settingsWindow.IsOpen;
+            }
+            
         }
 
         private void CreateWindows()
@@ -154,6 +163,7 @@ namespace NOTED
             {
                 _activeDuty = null;
                 _noteWindow.Note = null;
+                _forceHide = false;
                 _prevTerritoryID = territory;
 
                 if (Settings.Duties.TryGetValue(territory, out Duty? duty) && duty != null)
@@ -168,7 +178,7 @@ namespace NOTED
                 _noteWindow.Note = _activeDuty.GetActiveNote();
             }
 
-            _noteWindow.IsOpen = Settings.Preview || _noteWindow.Note != null;
+            _noteWindow.IsOpen = Settings.Preview || (_noteWindow.Note != null && !_forceHide);
             _windowSystem?.Draw();
         }
 
