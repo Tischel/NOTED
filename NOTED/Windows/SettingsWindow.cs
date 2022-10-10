@@ -54,7 +54,55 @@ namespace NOTED.Windows
 
         public override void Draw()
         {
-            DrawGeneralSettings();
+            if (!ImGui.BeginTabBar("##NOTED_Settings_TabBar"))
+            {
+                return;
+            }
+
+            // notes
+            if (ImGui.BeginTabItem("Notes##NOTED_Notes"))
+            {
+                Size = new Vector2(740, 600);
+                DrawNotesTab();
+                ImGui.EndTabItem();
+            }
+
+            // general
+            if (ImGui.BeginTabItem("Settings##NOTED_General"))
+            {
+                Size = new Vector2(300, 300);
+                DrawSettingsTab();
+                ImGui.EndTabItem();
+            }
+
+            ImGui.EndTabBar();
+        }
+
+        public void DrawSettingsTab()
+        {
+            ImGui.Checkbox("Locked", ref Settings.Locked);
+            DrawHelper.SetTooltip("Untick to be able to move and resize the notes.");
+
+            ImGui.Checkbox("Preview", ref Settings.Preview);
+            DrawHelper.SetTooltip("Tick to preview a dummy note and be able to move it and resize it.");
+
+            ImGui.NewLine();
+            ImGui.Checkbox("Left Click to Copy", ref Settings.LeftClickToCopy);
+            DrawHelper.SetTooltip("When enabled, left clicking on a note will copy its contents to the clipboard.");
+
+            ImGui.Checkbox("Right Click to Edit", ref Settings.RightClickToEdit);
+            DrawHelper.SetTooltip("When enabled, right clicking on a note will open the configuration window to edit it.");
+
+            ImGui.Checkbox("Shift+Left Click to Send", ref Settings.ShiftLeftClickToSend);
+            DrawHelper.SetTooltip("When enabled, shift + left clicking on a note will send it to the current chat channel.\nNote: Only the first 15 lines will be sent.");
+
+            ImGui.NewLine();
+            ImGui.ColorEdit4("Locked Color", ref Settings.LockedBackgroundColor, ImGuiColorEditFlags.NoInputs);
+            ImGui.ColorEdit4("Unlocked Color", ref Settings.UnlockedBackgroundColor, ImGuiColorEditFlags.NoInputs);
+        }
+
+        public void DrawNotesTab()
+        {
             DrawButtons();
             DrawDutyList();
             DrawNoteList();
@@ -129,34 +177,6 @@ namespace NOTED.Windows
             SelectedDuty = duty;
             SelectedNote = newNote;
             NeedsFocus = true;
-        }
-
-        private void DrawGeneralSettings()
-        {
-            ImGui.BeginChild("##General", new Vector2(725 * _scale, 37 * _scale), true);
-            {
-                ImGui.Checkbox("Locked", ref Settings.Locked);
-                DrawHelper.SetTooltip("Untick to be able to move and resize the notes.");
-
-                DrawHelper.Tab(0.6f);
-                ImGui.Checkbox("Preview", ref Settings.Preview);
-                DrawHelper.SetTooltip("Tick to preview a dummy note and be able to move it and resize it.");
-
-                DrawHelper.Tab(0.6f);
-                ImGui.Checkbox("Left Click to Copy", ref Settings.LeftClickToCopy);
-                DrawHelper.SetTooltip("When enabled, left clicking on a note will copy its contents to the clipboard.");
-
-                DrawHelper.Tab(0.6f);
-                ImGui.Checkbox("Right Click to Edit", ref Settings.RightClickToEdit);
-                DrawHelper.SetTooltip("When enabled, right clicking on a note will open the configuration window to edit it.");
-
-                DrawHelper.Tab(0.6f);
-                ImGui.ColorEdit4("Locked Color", ref Settings.LockedBackgroundColor, ImGuiColorEditFlags.NoInputs);
-
-                DrawHelper.Tab(0.6f);
-                ImGui.ColorEdit4("Unlocked Color", ref Settings.UnlockedBackgroundColor, ImGuiColorEditFlags.NoInputs);
-            }
-            ImGui.EndChild();
         }
 
         private void DrawButtons()
@@ -292,7 +312,7 @@ namespace NOTED.Windows
 
         private void DrawDutyList()
         {
-            ImGui.BeginChild("##DutyList", new Vector2(150 * _scale, 485 * _scale), true);
+            ImGui.BeginChild("##DutyList", new Vector2(150 * _scale, 498 * _scale), true);
             {
                 foreach (Duty duty in Settings.Duties.Values)
                 {
@@ -311,7 +331,7 @@ namespace NOTED.Windows
         {
             ImGui.SameLine();
 
-            ImGui.BeginChild("##NoteList", new Vector2(150 * _scale, 485 * _scale), true);
+            ImGui.BeginChild("##NoteList", new Vector2(150 * _scale, 498 * _scale), true);
             {
                 if (SelectedDuty != null)
                 {
@@ -338,7 +358,7 @@ namespace NOTED.Windows
         {
             ImGui.SameLine();
 
-            ImGui.BeginChild("##Note", new Vector2(411 * _scale, 485 * _scale), true);
+            ImGui.BeginChild("##Note", new Vector2(411 * _scale, 498 * _scale), true);
             {
                 if (SelectedNote != null) {
                     ImGui.PushItemWidth(398 * _scale);
@@ -349,7 +369,7 @@ namespace NOTED.Windows
                         ImGui.SetKeyboardFocusHere();
                         NeedsFocus = false;
                     }
-                    ImGui.InputTextMultiline("##Text", ref SelectedNote.Text, 99999, new Vector2(398 * _scale, 420 * _scale), ImGuiInputTextFlags.AutoSelectAll);
+                    ImGui.InputTextMultiline("##Text", ref SelectedNote.Text, 99999, new Vector2(398 * _scale, 433 * _scale), ImGuiInputTextFlags.AutoSelectAll);
 
                     ImGui.Checkbox("Enabled", ref SelectedNote.Enabled);
 

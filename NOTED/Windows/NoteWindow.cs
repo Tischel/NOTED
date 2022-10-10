@@ -1,6 +1,7 @@
 ﻿using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
+using NOTED.Helpers;
 using NOTED.Models;
 using System.Numerics;
 
@@ -49,16 +50,27 @@ namespace NOTED.Windows
         {
             string? text = Settings.Preview ? PreviewText : Note?.Text;
             if (text == null) { return; }
-
+            
             ImGui.PushTextWrapPos(ImGui.GetWindowWidth());
             ImGui.TextWrapped(text);
             ImGui.PopTextWrapPos();
 
             if (ImGui.IsWindowHovered())
             {
-                if (Settings.LeftClickToCopy && ImGui.IsMouseClicked(ImGuiMouseButton.Left))
+                if (ImGui.IsMouseClicked(ImGuiMouseButton.Left)) 
                 {
-                    ImGui.SetClipboardText(text);
+                    if (Settings.ShiftLeftClickToSend && ImGui.IsKeyDown(ImGuiKey.LeftShift))
+                    {
+                        ChatHelper.SendNoteTextToChat(text);
+                    }
+
+                    if (Settings.LeftClickToCopy)
+                    {
+                        if (!Settings.ShiftLeftClickToSend || !ImGui.IsKeyDown(ImGuiKey.LeftShift))
+                        {
+                            ImGui.SetClipboardText(text);
+                        }
+                    }
                 }
 
                 if (Settings.RightClickToEdit && ImGui.IsMouseClicked(ImGuiMouseButton.Right))
