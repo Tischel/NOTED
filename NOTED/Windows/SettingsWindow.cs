@@ -80,9 +80,15 @@ namespace NOTED.Windows
 
         public void DrawSettingsTab()
         {
+            ImGui.Checkbox("Hide", ref Settings.Hidden);
+
+            ImGui.SameLine();
+            ImGui.Checkbox("Hide in Combat", ref Settings.HideInCombat);
+
             ImGui.Checkbox("Locked", ref Settings.Locked);
             DrawHelper.SetTooltip("Untick to be able to move and resize the notes.");
 
+            ImGui.SameLine();
             ImGui.Checkbox("Preview", ref Settings.Preview);
             DrawHelper.SetTooltip("Tick to preview a dummy note and be able to move it and resize it.");
 

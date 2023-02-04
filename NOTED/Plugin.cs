@@ -1,6 +1,7 @@
 ﻿using Dalamud.Data;
 using Dalamud.Game;
 using Dalamud.Game.ClientState;
+using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.Command;
 using Dalamud.Game.Gui;
@@ -19,6 +20,7 @@ namespace NOTED
     {
         public static ClientState ClientState { get; private set; } = null!;
         public static CommandManager CommandManager { get; private set; } = null!;
+        public static Condition Condition { get; private set; } = null!;
         public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
         public static Framework Framework { get; private set; } = null!;
         public static GameGui GameGui { get; private set; } = null!;
@@ -46,6 +48,7 @@ namespace NOTED
         public Plugin(
             ClientState clientState,
             CommandManager commandManager,
+            Condition condition,
             DalamudPluginInterface pluginInterface,
             Framework framwork,
             DataManager dataManager,
@@ -55,6 +58,7 @@ namespace NOTED
         {
             ClientState = clientState;
             CommandManager = commandManager;
+            Condition = condition;
             PluginInterface = pluginInterface;
             Framework = framwork;
             DataManager = dataManager;
@@ -71,7 +75,7 @@ namespace NOTED
                 AssemblyLocation = Assembly.GetExecutingAssembly().Location;
             }
 
-            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.0.0.0";
+            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.1.0.0";
 
             UiBuilder.Draw += Draw;
             UiBuilder.OpenConfigUi += OpenConfigUi;
@@ -110,12 +114,12 @@ namespace NOTED
             if (arguments == "toggle")
             {
                 _forceHide = !_forceHide;
-            } 
+            }
             else
             {
                 _settingsWindow.IsOpen = !_settingsWindow.IsOpen;
             }
-            
+
         }
 
         private void CreateWindows()
@@ -190,8 +194,23 @@ namespace NOTED
                 _noteWindow.Note = activeNote;
             }
 
-            _noteWindow.IsOpen = Settings.Preview || (_noteWindow.Note != null && !_forceHide);
+            _noteWindow.IsOpen = IsNoteWindowOpened();
             _windowSystem?.Draw();
+        }
+
+        private bool IsNoteWindowOpened()
+        {
+            if (Settings.Preview)
+            {
+                return true;
+            }
+
+            if (Settings.Hidden || Settings.HideInCombat && Plugin.Condition[ConditionFlag.InCombat])
+            {
+                return false;
+            }
+
+            return (_noteWindow.Note != null && !_forceHide);
         }
 
         private void OpenConfigUi()

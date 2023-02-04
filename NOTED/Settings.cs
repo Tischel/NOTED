@@ -12,6 +12,8 @@ namespace NOTED
     {
         public Dictionary<uint, Duty> Duties = new Dictionary<uint, Duty>();
 
+        public bool Hidden = false;
+        public bool HideInCombat = false;
         public bool Locked = false;
         public bool Preview = false;
         public bool LeftClickToCopy = true;
@@ -49,7 +51,7 @@ namespace NOTED
             {
                 foreach (Duty duty in settings.Duties.Values)
                 {
-                    foreach (Note note in duty.Notes) 
+                    foreach (Note note in duty.Notes)
                     {
                         note.Jobs.Update();
                     }
