@@ -67,11 +67,19 @@ namespace NOTED.Windows
                 ImGui.EndTabItem();
             }
 
-            // general
+            // settings
             if (ImGui.BeginTabItem("Settings##NOTED_General"))
             {
                 Size = new Vector2(300, 300);
                 DrawSettingsTab();
+                ImGui.EndTabItem();
+            }
+
+            // keybinds
+            if (ImGui.BeginTabItem("Keybinds##NOTED_Keybinds"))
+            {
+                Size = new Vector2(300, 300);
+                DrawKeybindsTab();
                 ImGui.EndTabItem();
             }
 
@@ -105,6 +113,31 @@ namespace NOTED.Windows
             ImGui.NewLine();
             ImGui.ColorEdit4("Locked Color", ref Settings.LockedBackgroundColor, ImGuiColorEditFlags.NoInputs);
             ImGui.ColorEdit4("Unlocked Color", ref Settings.UnlockedBackgroundColor, ImGuiColorEditFlags.NoInputs);
+        }
+
+        public void DrawKeybindsTab()
+        {
+            ImGui.Checkbox("Keybind Passthrough", ref Settings.KeybindPassthrough);
+            DrawHelper.SetTooltip("When enabled, the game will receive a key press even if it's bound in NOTED.");
+
+            ImGui.NewLine();
+            DrawKeybind(Settings.HideKeybind, "##NOTED_HideKeybind", "Toggle note");
+
+            ImGui.NewLine();
+            DrawKeybind(Settings.NextNoteKeybind, "##NOTED_NextKeybind", "Next note");
+
+            ImGui.NewLine();
+            DrawKeybind(Settings.PreviousNoteKeybind, "##NOTED_PreviousKeybind", "Previous note");
+        }
+
+        public void DrawKeybind(KeyBind keybind, string id, string name, int width = 120)
+        {
+            if (keybind.Draw(id, width * _scale))
+            {
+                Settings.ValidateKeyBind(keybind);
+            }
+            ImGui.SameLine();
+            ImGui.Text(name);
         }
 
         public void DrawNotesTab()
@@ -257,7 +290,7 @@ namespace NOTED.Windows
                             {
                                 SelectedDuty.Notes[index] = SelectedDuty.Notes[index - 1];
                                 SelectedDuty.Notes[index - 1] = SelectedNote;
-                             }
+                            }
                         }
                         ImGui.PopFont();
                         DrawHelper.SetTooltip("Move Up" + moveHelp);

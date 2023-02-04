@@ -1,9 +1,11 @@
 ﻿using Dalamud.Logging;
 using Newtonsoft.Json;
+using NOTED.Helpers;
 using NOTED.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.NetworkInformation;
 using System.Numerics;
 
 namespace NOTED
@@ -21,6 +23,30 @@ namespace NOTED
         public bool ShiftLeftClickToSend = true;
         public Vector4 LockedBackgroundColor = new Vector4(0f, 0f, 0f, 0.25f);
         public Vector4 UnlockedBackgroundColor = new Vector4(0f, 0f, 0f, 0.75f);
+
+        public bool KeybindPassthrough = false;
+        public KeyBind HideKeybind = new KeyBind((int)Keys.H, true, false, true);
+        public KeyBind NextNoteKeybind = new KeyBind((int)Keys.Right, true, false, true);
+        public KeyBind PreviousNoteKeybind = new KeyBind((int)Keys.Left, true, false, true);
+
+        public KeyBind[] GetKeybinds()
+        {
+            KeyBind[] keybinds = { HideKeybind, NextNoteKeybind, PreviousNoteKeybind };
+            return keybinds;
+        }
+
+        public void ValidateKeyBind(KeyBind prioritizedKeybind)
+        {
+            KeyBind[] keybinds = GetKeybinds();
+
+            foreach (KeyBind keybind in keybinds)
+            {
+                if (prioritizedKeybind != keybind && prioritizedKeybind.Equals(keybind))
+                {
+                    keybind.Reset();
+                }
+            }
+        }
 
         #region load / save
         private static string JsonPath = Path.Combine(Plugin.PluginInterface.GetPluginConfigDirectory(), "Settings.json");

@@ -1,5 +1,6 @@
 ﻿using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.UI.Shell;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -9,6 +10,12 @@ namespace NOTED.Helpers
 {
     public static class ChatHelper
     {
+        public static unsafe bool IsInputTextActive()
+        {
+            IntPtr ptr = *(IntPtr*)((IntPtr)AtkStage.GetSingleton() + 0x28) + 0x188E;
+            return ptr != IntPtr.Zero && *(bool*)ptr;
+        }
+
         public static unsafe void SendNoteTextToChat(string text)
         {
             try
