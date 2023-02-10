@@ -8,6 +8,7 @@ using NOTED.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NOTED.Windows
 {
@@ -28,14 +29,17 @@ namespace NOTED.Windows
         private bool _needsFocusOnNewNote = false;
         public bool NeedsFocus = false;
 
-        private List<TerritoryType> _duties = new List<TerritoryType>();
-        private List<TerritoryType> _searchResult = new List<TerritoryType>();
+        private List<DutyData> _duties = new List<DutyData>();
+        private List<DutyData> _searchResult = new List<DutyData>();
+        private static uint kMaskedCarnivaleID = 796;
 
         public SettingsWindow(string name) : base(name)
         {
             ExcelSheet<TerritoryType>? sheet = Plugin.DataManager.GetExcelSheet<TerritoryType>();
             if (sheet != null) {
-                _duties = sheet.Where(row => row.ContentFinderCondition.Value != null && row.ContentFinderCondition.Value.Name.ToString().Length > 0).ToList();
+                List<TerritoryType> territories = sheet.Where(row => row.ContentFinderCondition.Value != null && row.ContentFinderCondition.Value.Name.ToString().Length > 0 && row.RowId != kMaskedCarnivaleID).ToList();
+                _duties = territories.Select(territory => new DutyData(territory)).ToList();
+                _duties.Add(new DutyData("The Masked Carnivale", 796));
             }
 
             Flags = ImGuiWindowFlags.NoScrollbar
@@ -464,16 +468,14 @@ namespace NOTED.Windows
 
                 ImGui.BeginChild("##DutySearch", new Vector2(width * _scale, 170 * _scale), true);
                 {
-                    List<TerritoryType> list = _newNoteDutyName.Length == 0 ? _duties : _searchResult;
+                    List<DutyData> list = _newNoteDutyName.Length == 0 ? _duties : _searchResult;
 
-                    foreach (TerritoryType data in list)
+                    foreach (DutyData data in list)
                     {
-                        string name = UserFriendlyDutyName(data.ContentFinderCondition.Value!.Name.ToString());
-                        
-                        if (ImGui.Selectable($"{name}", _newNoteDutyID == data.RowId, ImGuiSelectableFlags.None, new Vector2(0, 24)))
+                        if (ImGui.Selectable($"{data.Name}", _newNoteDutyID == data.ID, ImGuiSelectableFlags.None, new Vector2(0, 24)))
                         {
-                            _newNoteDutyName = name;
-                            _newNoteDutyID = data.RowId;
+                            _newNoteDutyName = data.Name;
+                            _newNoteDutyID = data.ID;
                         }
                     }
                 }
@@ -526,12 +528,30 @@ namespace NOTED.Windows
             }
 
             string s = text.ToUpper();
-            _searchResult = _duties.Where(row => row.ContentFinderCondition.Value!.Name.ToString().ToUpper().Contains(s)).ToList();
+            _searchResult = _duties.Where(duty => duty.Name.ToUpper().Contains(s)).ToList();
         }
 
         private bool IsNewNoteValid()
         {
             return _newNoteTitle.Length > 0 && _newNoteDutyName.Length > 0 && _newNoteDutyID != 0;
+        }
+    }
+
+    internal class DutyData
+    {
+        public string Name { get; }
+        public uint ID { get; }
+
+        internal DutyData(string name, uint id)
+        {
+            Name = UserFriendlyDutyName(name);
+            ID = id;
+        }
+
+        internal DutyData(TerritoryType territory)
+        {
+            Name = UserFriendlyDutyName(territory.ContentFinderCondition.Value!.Name.ToString());
+            ID = territory.RowId;
         }
 
         private string UserFriendlyDutyName(string name)

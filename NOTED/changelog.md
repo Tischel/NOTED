@@ -1,3 +1,7 @@
+# 1.1.1.0
+- Combined all duties from The Masked Carnivale into a single entry.
+    + Each challenge was treated as a different duty before, but since the internal ID is the same it was creating issues.
+
 # 1.1.0.0
 - Added some visibility settings.
 - Added keybind to toggle notes on/off.
