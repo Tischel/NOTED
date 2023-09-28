@@ -1,3 +1,6 @@
+# 1.2.0.0
+- Added support for patch 6.5 and Dalamud API 9.
+
 # 1.1.1.0
 - Combined all duties from The Masked Carnivale into a single entry.
     + Each challenge was treated as a different duty before, but since the internal ID is the same it was creating issues.

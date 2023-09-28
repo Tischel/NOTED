@@ -25,13 +25,13 @@ namespace NOTED.Helpers
                 Macro macro = new Macro(ptr, string.Empty, lines);
                 Marshal.StructureToPtr(macro, ptr, false);
 
-                RaptureShellModule.Instance->ExecuteMacro((FFXIVClientStructs.FFXIV.Client.UI.Misc.RaptureMacroModule.Macro*)ptr);
+                RaptureShellModule.Instance()->ExecuteMacro((FFXIVClientStructs.FFXIV.Client.UI.Misc.RaptureMacroModule.Macro*)ptr);
 
                 Marshal.FreeHGlobal(ptr);
             }
             catch (Exception e)
             {
-                PluginLog.Log(e.Message);
+                Plugin.Logger.Debug(e.Message);
             }
         }
     }

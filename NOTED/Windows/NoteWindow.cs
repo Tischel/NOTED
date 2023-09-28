@@ -1,4 +1,4 @@
-﻿using Dalamud.Interface;
+﻿using Dalamud.Interface.Utility;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 using NOTED.Helpers;
@@ -50,14 +50,14 @@ namespace NOTED.Windows
         {
             string? text = Settings.Preview ? PreviewText : Note?.Text;
             if (text == null) { return; }
-            
+
             ImGui.PushTextWrapPos(ImGui.GetWindowWidth());
             ImGui.TextWrapped(text);
             ImGui.PopTextWrapPos();
 
             if (ImGui.IsWindowHovered())
             {
-                if (ImGui.IsMouseClicked(ImGuiMouseButton.Left)) 
+                if (ImGui.IsMouseClicked(ImGuiMouseButton.Left))
                 {
                     if (Settings.ShiftLeftClickToSend && ImGui.IsKeyDown(ImGuiKey.LeftShift))
                     {

@@ -1,4 +1,5 @@
 ﻿using Dalamud.Interface;
+using Dalamud.Interface.Utility;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 using Lumina.Excel;
@@ -8,7 +9,6 @@ using NOTED.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NOTED.Windows
 {
@@ -36,7 +36,8 @@ namespace NOTED.Windows
         public SettingsWindow(string name) : base(name)
         {
             ExcelSheet<TerritoryType>? sheet = Plugin.DataManager.GetExcelSheet<TerritoryType>();
-            if (sheet != null) {
+            if (sheet != null)
+            {
                 List<TerritoryType> territories = sheet.Where(row => row.ContentFinderCondition.Value != null && row.ContentFinderCondition.Value.Name.ToString().Length > 0 && row.RowId != kMaskedCarnivaleID).ToList();
                 _duties = territories.Select(territory => new DutyData(territory)).ToList();
                 _duties.Add(new DutyData("The Masked Carnivale", 796));
@@ -298,7 +299,7 @@ namespace NOTED.Windows
                         }
                         ImGui.PopFont();
                         DrawHelper.SetTooltip("Move Up" + moveHelp);
-                    
+
                         ImGui.SameLine(); DrawHelper.Tab(5);
                         ImGui.PushFont(UiBuilder.IconFont);
                         if (ImGui.Button(FontAwesomeIcon.ArrowDown.ToIconString()))
@@ -312,7 +313,7 @@ namespace NOTED.Windows
                             else
                             {
                                 SelectedDuty.Notes[index] = SelectedDuty.Notes[index + 1];
-                                SelectedDuty.Notes[index + 1] =SelectedNote;
+                                SelectedDuty.Notes[index + 1] = SelectedNote;
                             }
                         }
                         ImGui.PopFont();
@@ -403,7 +404,8 @@ namespace NOTED.Windows
 
             ImGui.BeginChild("##Note", new Vector2(411 * _scale, 498 * _scale), true);
             {
-                if (SelectedNote != null) {
+                if (SelectedNote != null)
+                {
                     ImGui.PushItemWidth(398 * _scale);
                     ImGui.InputText("##Title", ref SelectedNote.Title, 64);
 

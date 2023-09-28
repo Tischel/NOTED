@@ -8,6 +8,7 @@ using Dalamud.Game.Gui;
 using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
+using Dalamud.Plugin.Services;
 using ImGuiNET;
 using Lumina.Data.Parsing.Uld;
 using NOTED.Helpers;
@@ -21,15 +22,16 @@ namespace NOTED
 {
     public class Plugin : IDalamudPlugin
     {
-        public static ClientState ClientState { get; private set; } = null!;
-        public static CommandManager CommandManager { get; private set; } = null!;
-        public static Condition Condition { get; private set; } = null!;
+        public static IClientState ClientState { get; private set; } = null!;
+        public static ICommandManager CommandManager { get; private set; } = null!;
+        public static ICondition Condition { get; private set; } = null!;
         public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
-        public static Framework Framework { get; private set; } = null!;
-        public static GameGui GameGui { get; private set; } = null!;
+        public static IFramework Framework { get; private set; } = null!;
+        public static IGameGui GameGui { get; private set; } = null!;
         public static UiBuilder UiBuilder { get; private set; } = null!;
-        public static DataManager DataManager { get; private set; } = null!;
-        public static KeyState KeyState { get; private set; } = null!;
+        public static IDataManager DataManager { get; private set; } = null!;
+        public static IKeyState KeyState { get; private set; } = null!;
+        public static IPluginLog Logger { get; private set; } = null!;
 
         public static string AssemblyLocation { get; private set; } = "";
         public string Name => "NOTED";
@@ -49,14 +51,15 @@ namespace NOTED
         private static Note? _prevNote = null;
 
         public Plugin(
-            ClientState clientState,
-            CommandManager commandManager,
-            Condition condition,
+            IClientState clientState,
+            ICommandManager commandManager,
+            ICondition condition,
             DalamudPluginInterface pluginInterface,
-            Framework framwork,
-            DataManager dataManager,
-            GameGui gameGui,
-            KeyState keyState
+            IFramework framwork,
+            IDataManager dataManager,
+            IGameGui gameGui,
+            IKeyState keyState,
+            IPluginLog logger
         )
         {
             ClientState = clientState;
@@ -68,6 +71,7 @@ namespace NOTED
             GameGui = gameGui;
             UiBuilder = pluginInterface.UiBuilder;
             KeyState = keyState;
+            Logger = logger;
 
             if (pluginInterface.AssemblyLocation.DirectoryName != null)
             {
@@ -78,7 +82,7 @@ namespace NOTED
                 AssemblyLocation = Assembly.GetExecutingAssembly().Location;
             }
 
-            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.1.1.0";
+            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.2.0.0";
 
             UiBuilder.Draw += Draw;
             UiBuilder.OpenConfigUi += OpenConfigUi;
@@ -217,7 +221,7 @@ namespace NOTED
             while (count < _activeDuty.Notes.Count && !_activeDuty.Notes[0].Enabled);
         }
 
-        private void Update(Framework framework)
+        private void Update(IFramework framework)
         {
             if (Settings == null || ClientState.LocalPlayer == null) return;
 

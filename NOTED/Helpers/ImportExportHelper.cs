@@ -76,7 +76,7 @@ namespace NOTED.Helpers
             }
             catch (Exception e)
             {
-                PluginLog.Error(e.Message);
+                Plugin.Logger.Error(e.Message);
             }
 
             return (0, null, null);
