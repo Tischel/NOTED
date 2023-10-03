@@ -1,4 +1,6 @@
 ﻿using Dalamud.Logging;
+using FFXIVClientStructs.FFXIV.Client.System.Framework;
+using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Shell;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System;
@@ -12,8 +14,16 @@ namespace NOTED.Helpers
     {
         public static unsafe bool IsInputTextActive()
         {
-            IntPtr ptr = *(IntPtr*)((IntPtr)AtkStage.GetSingleton() + 0x28) + 0x188E;
-            return ptr != IntPtr.Zero && *(bool*)ptr;
+            Framework* framework = Framework.Instance();
+            if (framework == null) { return false; }
+
+            UIModule* module = framework->GetUiModule();
+            if (module == null) { return false; }
+
+            RaptureAtkModule* atkModule = module->GetRaptureAtkModule();
+            if (atkModule == null) { return false; }
+
+            return atkModule->AtkModule.IsTextInputActive();
         }
 
         public static unsafe void SendNoteTextToChat(string text)
