@@ -13,11 +13,9 @@ namespace NOTED.Windows
         private Settings Settings => Plugin.Settings;
 
         public Note? Note = null;
-        private ImGuiWindowFlags _baseFlags = ImGuiWindowFlags.NoScrollbar
-                                            | ImGuiWindowFlags.NoCollapse
+        private ImGuiWindowFlags _baseFlags = ImGuiWindowFlags.NoCollapse
                                             | ImGuiWindowFlags.NoTitleBar
-                                            | ImGuiWindowFlags.NoNav
-                                            | ImGuiWindowFlags.NoScrollWithMouse;
+                                            | ImGuiWindowFlags.NoNav;
 
         private static string PreviewText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nFermentum iaculis eu non diam phasellus vestibulum lorem sed.\nSapien eget mi proin sed libero enim sed faucibus turpis.\nArcu bibendum at varius vel pharetra vel.\nScelerisque eleifend donec pretium vulputate sapien nec sagittis aliquam malesuada.\nAliquam malesuada bibendum arcu vitae elementum curabitur vitae.\nPotenti nullam ac tortor vitae purus faucibus ornare suspendisse.\nAenean sed adipiscing diam donec adipiscing tristique risus.\nAliquam sem fringilla ut morbi tincidunt augue interdum.\nRhoncus mattis rhoncus urna neque viverra justo nec ultrices.\nSagittis nisl rhoncus mattis rhoncus urna neque viverra justo.\nTortor at risus viverra adipiscing.\nHabitasse platea dictumst vestibulum rhoncus est pellentesque.\nPharetra vel turpis nunc eget lorem dolor sed viverra ipsum.\nDonec pretium vulputate sapien nec sagittis aliquam malesuada.\nDonec pretium vulputate sapien nec sagittis aliquam malesuada bibendum.\nSit amet facilisis magna etiam tempor orci.\nVitae turpis massa sed elementum tempus egestas sed sed.\nEu tincidunt tortor aliquam nulla facilisi cras fermentum odio.\nEtiam tempor orci eu lobortis elementum.";
 
@@ -51,11 +49,13 @@ namespace NOTED.Windows
             string? text = Settings.Preview ? PreviewText : Note?.Text;
             if (text == null) { return; }
 
+            text = text.Replace("%", "%%");
+
             ImGui.PushTextWrapPos(ImGui.GetWindowWidth());
             ImGui.TextWrapped(text);
             ImGui.PopTextWrapPos();
 
-            if (ImGui.IsWindowHovered())
+            if (ImGui.IsWindowHovered() || ImGui.IsItemHovered())
             {
                 if (ImGui.IsMouseClicked(ImGuiMouseButton.Left))
                 {

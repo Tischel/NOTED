@@ -76,7 +76,7 @@ namespace NOTED.Windows
             // notes
             if (ImGui.BeginTabItem("Notes##NOTED_Notes"))
             {
-                Size = new Vector2(740, 600);
+                Size = new Vector2(742, 606);
                 DrawNotesTab();
                 ImGui.EndTabItem();
             }
@@ -234,7 +234,7 @@ namespace NOTED.Windows
 
         private void DrawButtons()
         {
-            ImGui.BeginChild("##Buttons", new Vector2(150 * _scale, 37 * _scale), true);
+            ImGui.BeginChild("##Buttons", new Vector2(150 * _scale, 39 * _scale), true);
             {
                 DrawHelper.Tab(1.2f);
                 ImGui.PushFont(UiBuilder.IconFont);
@@ -260,7 +260,7 @@ namespace NOTED.Windows
             ImGui.EndChild();
 
             ImGui.SameLine();
-            ImGui.BeginChild("##Buttons2", new Vector2(568 * _scale, 37 * _scale), true);
+            ImGui.BeginChild("##Buttons2", new Vector2(568 * _scale, 39 * _scale), true);
             {
                 if (SelectedDuty != null && SelectedNote != null)
                 {
@@ -423,7 +423,13 @@ namespace NOTED.Windows
                         ImGui.SetKeyboardFocusHere();
                         NeedsFocus = false;
                     }
-                    ImGui.InputTextMultiline("##Text", ref SelectedNote.Text, 99999, new Vector2(398 * _scale, 433 * _scale), ImGuiInputTextFlags.AutoSelectAll);
+                    ImGui.InputTextMultiline(
+                        "##Text", 
+                        ref SelectedNote.Text, 
+                        99999, 
+                        new Vector2(398 * _scale, 428 * _scale), 
+                        ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.AllowTabInput
+                    );
 
                     ImGui.Checkbox("Enabled", ref SelectedNote.Enabled);
 

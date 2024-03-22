@@ -25,7 +25,7 @@ namespace NOTED.Windows
                 | ImGuiWindowFlags.NoResize
                 | ImGuiWindowFlags.NoScrollWithMouse;
 
-            Size = new Vector2(640, 300);
+            Size = new Vector2(710, 330);
         }
 
         public override void OnOpen()
@@ -46,7 +46,7 @@ namespace NOTED.Windows
             if (Note == null) { return; }
 
             JobsData data = Note.Jobs;
-            Vector2 cursorPos = ImGui.GetCursorPos() + new Vector2(14, 14);
+            Vector2 cursorPos = ImGui.GetCursorPos() + new Vector2(14 * _scale);
             Vector2 originalPos = cursorPos;
             float maxY = 0;
 
@@ -67,7 +67,7 @@ namespace NOTED.Windows
                     _changed = true;
                 }
 
-                cursorPos.Y += 40;
+                cursorPos.Y += 40 * _scale;
                 int jobCount = data.Map[role].Count;
 
                 for (int i = 0; i < jobCount; i++)
@@ -84,10 +84,10 @@ namespace NOTED.Windows
                         _changed = true;
                     }
 
-                    cursorPos.Y += 30;
+                    cursorPos.Y += 30 * _scale;
                 }
 
-                cursorPos.X += 100;
+                cursorPos.X += 100 * _scale;
                 cursorPos.Y = originalPos.Y;
             }
 
