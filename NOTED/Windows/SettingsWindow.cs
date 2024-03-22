@@ -38,8 +38,17 @@ namespace NOTED.Windows
             ExcelSheet<TerritoryType>? sheet = Plugin.DataManager.GetExcelSheet<TerritoryType>();
             if (sheet != null)
             {
-                List<TerritoryType> territories = sheet.Where(row => row.ContentFinderCondition.Value != null && row.ContentFinderCondition.Value.Name.ToString().Length > 0 && row.RowId != kMaskedCarnivaleID).ToList();
-                _duties = territories.Select(territory => new DutyData(territory)).ToList();
+                // Remove duplicated duties and keep the one with the higher id (newer version)
+                _duties = sheet.Where(
+                    row => row.ContentFinderCondition.Value != null &&
+                    row.ContentFinderCondition.Value.Name.ToString().Length > 0 &&
+                    row.RowId != kMaskedCarnivaleID)
+                .Select(territory => new DutyData(territory))
+                .GroupBy(duty => duty.Name)
+                .Select(duties => duties.MaxBy(duty => duty.ID))
+                .OfType<DutyData>()
+                .ToList();
+
                 _duties.Add(new DutyData("The Masked Carnivale", 796));
             }
 
