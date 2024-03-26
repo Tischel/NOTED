@@ -1,3 +1,6 @@
+# 1.2.1.1
+- Fixed note not appearing when creating it inside the duty.
+
 # 1.2.1.0
 - Removed duplicated duty entries.
 - Notes are now scrollable if the content is bigger than the window.

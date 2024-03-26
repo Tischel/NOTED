@@ -49,6 +49,7 @@ namespace NOTED
         private static Duty? _activeDuty = null;
         private static bool _forceHide = false;
         private static Note? _prevNote = null;
+        private static bool _forceCheck = false;
 
         public Plugin(
             IClientState clientState,
@@ -82,7 +83,7 @@ namespace NOTED
                 AssemblyLocation = Assembly.GetExecutingAssembly().Location;
             }
 
-            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.2.1.0";
+            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.2.1.1";
 
             UiBuilder.Draw += Draw;
             UiBuilder.OpenConfigUi += OpenConfigUi;
@@ -234,19 +235,25 @@ namespace NOTED
             }
         }
 
+        public static void OnNoteAdded()
+        {
+            _forceCheck = true;
+        }
+
         private unsafe void Draw()
         {
             if (Settings == null || ClientState.LocalPlayer == null) return;
 
             // detect territory change
             ushort territory = ClientState.TerritoryType;
-            if (territory != _prevTerritoryID)
+            if (_forceCheck || territory != _prevTerritoryID)
             {
                 _activeDuty = null;
                 _noteWindow.Note = null;
                 _prevNote = null;
                 _forceHide = false;
                 _prevTerritoryID = territory;
+                _forceCheck = false;
 
                 if (Settings.Duties.TryGetValue(territory, out Duty? duty) && duty != null)
                 {

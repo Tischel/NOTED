@@ -224,6 +224,7 @@ namespace NOTED.Windows
 
             Note newNote = new Note(_newNoteTitle);
             duty.Notes.Add(newNote);
+            Plugin.OnNoteAdded();
 
             Settings.Save(Settings);
 
