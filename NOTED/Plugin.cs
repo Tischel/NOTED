@@ -235,7 +235,7 @@ namespace NOTED
             }
         }
 
-        public static void OnNoteAdded()
+        public static void ForceUpdate()
         {
             _forceCheck = true;
         }

@@ -192,6 +192,7 @@ namespace NOTED.Windows
                         SelectedDuty = null;
                     }
 
+                    Plugin.ForceUpdate();
                     Settings.Save(Settings);
                 }
 
@@ -211,6 +212,7 @@ namespace NOTED.Windows
                     SelectedDuty = null;
                     SelectedNote = null;
 
+                    Plugin.ForceUpdate();
                     Settings.Save(Settings);
                 }
 
@@ -239,7 +241,7 @@ namespace NOTED.Windows
 
             Note newNote = new Note(_newNoteTitle);
             duty.Notes.Add(newNote);
-            Plugin.OnNoteAdded();
+            Plugin.ForceUpdate();
 
             Settings.Save(Settings);
 
