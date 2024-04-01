@@ -447,6 +447,12 @@ namespace NOTED.Windows
 
                         if (ImGui.BeginPopupContextItem())
                         {
+                            if (ImGui.Selectable("Export"))
+                            {
+                                string exportString = ImportExportHelper.GenerateExportString(SelectedDuty, note);
+                                ImGui.SetClipboardText(exportString);
+                            }
+
                             if (ImGui.Selectable("Delete"))
                             {
                                 _deletingNote = note;
