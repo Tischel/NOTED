@@ -83,7 +83,7 @@ namespace NOTED
                 AssemblyLocation = Assembly.GetExecutingAssembly().Location;
             }
 
-            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.2.1.1";
+            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.2.2.0";
 
             UiBuilder.Draw += Draw;
             UiBuilder.OpenConfigUi += OpenConfigUi;
@@ -240,12 +240,23 @@ namespace NOTED
             _forceCheck = true;
         }
 
+        public static bool IsInDuty()
+        {
+            return Condition[ConditionFlag.BoundByDuty] ||
+                Condition[ConditionFlag.BoundByDuty56] ||
+                Condition[ConditionFlag.BoundByDuty95] ||
+                Condition[ConditionFlag.BoundToDuty97];
+        }
+
+        public static ushort NoDutyID() => ushort.MaxValue;
+
         private unsafe void Draw()
         {
             if (Settings == null || ClientState.LocalPlayer == null) return;
 
             // detect territory change
-            ushort territory = ClientState.TerritoryType;
+            ushort territory = IsInDuty() ? ClientState.TerritoryType : NoDutyID();
+
             if (_forceCheck || territory != _prevTerritoryID)
             {
                 _activeDuty = null;

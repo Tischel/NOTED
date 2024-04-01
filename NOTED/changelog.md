@@ -1,3 +1,9 @@
+# 1.2.2.0
+- Added a "No Duty" entry. Notes added to this section will be shown while outside of duties.
+- Duties are now filled automatically when creating a new note while being inside a duty.
+- Added context menu to the notes list to Export or Delete with Right Click.
+- Added context menu to the duty list to Delete all notes for a duty with Right Click.
+
 # 1.2.1.1
 - Fixed note not appearing when creating it inside the duty.
 
@@ -13,7 +19,7 @@
 
 # 1.1.1.0
 - Combined all duties from The Masked Carnivale into a single entry.
-    + Each challenge was treated as a different duty before, but since the internal ID is the same it was creating issues.
+  + Each challenge was treated as a different duty before, but since the internal ID is the same it was creating issues.
 
 # 1.1.0.0
 - Added some visibility settings.

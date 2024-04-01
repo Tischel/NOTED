@@ -21,7 +21,8 @@ namespace NOTED.Windows
         public Note? SelectedNote = null;
 
         private bool _addingNote = false;
-        private bool _deletingNote = false;
+        private Note? _deletingNote = null;
+        private Duty? _deletingDuty = null;
         private uint _newNoteDutyID = 0;
         private string _newNoteDutyName = "";
         private string _newNoteTitle = "";
@@ -50,6 +51,7 @@ namespace NOTED.Windows
                 .ToList();
 
                 _duties.Add(new DutyData("The Masked Carnivale", 796));
+                _duties.Insert(0, new DutyData("No Duty", Plugin.NoDutyID()));
             }
 
             Flags = ImGuiWindowFlags.NoScrollbar
@@ -175,19 +177,13 @@ namespace NOTED.Windows
                 }
             }
 
-            if (_deletingNote)
+            if (_deletingNote != null)
             {
-                if (SelectedNote == null)
-                {
-                    _deletingNote = false;
-                    return;
-                }
-
-                string[] lines = new string[] { "Are you sure you want the note:", "\"" + SelectedNote.Title + "\"?" };
+                string[] lines = ["Are you sure you want to delete the note:", "\"" + _deletingNote.Title + "\"?"];
                 var (didConfirm, didClose) = DrawHelper.DrawConfirmationModal("Delete?", lines);
                 if (didConfirm && SelectedDuty != null)
                 {
-                    SelectedDuty.Notes.Remove(SelectedNote);
+                    SelectedDuty.Notes.Remove(_deletingNote);
                     SelectedNote = null;
 
                     if (SelectedDuty.Notes.Count == 0)
@@ -201,7 +197,26 @@ namespace NOTED.Windows
 
                 if (didClose)
                 {
-                    _deletingNote = false;
+                    _deletingNote = null;
+                }
+            }
+
+            if (_deletingDuty != null)
+            {
+                string[] lines = ["Are you sure you want to delete all notes for:", "\"" + _deletingDuty.Name + "\"?"];
+                var (didConfirm, didClose) = DrawHelper.DrawConfirmationModal("Delete?", lines);
+                if (didConfirm && SelectedDuty != null)
+                {
+                    Settings.Duties.Remove(_deletingDuty.ID);
+                    SelectedDuty = null;
+                    SelectedNote = null;
+
+                    Settings.Save(Settings);
+                }
+
+                if (didClose)
+                {
+                    _deletingDuty = null;
                 }
             }
         }
@@ -241,10 +256,27 @@ namespace NOTED.Windows
                 ImGui.PushFont(UiBuilder.IconFont);
                 if (ImGui.Button(FontAwesomeIcon.Plus.ToIconString()))
                 {
-                    _newNoteDutyID = 0;
                     _newNoteTitle = "New Note";
                     _addingNote = true;
                     _needsFocusOnNewNote = true;
+                    
+                    // set active duty automatically (if any)
+                    DutyData? duty = _duties.FirstOrDefault(o => o.ID == Plugin.ClientState.TerritoryType);
+                    if (duty != null)
+                    {
+                        _searchResult = new() { duty };
+                    }
+
+                    if (_searchResult.Count == 1)
+                    {
+                        _newNoteDutyID = _searchResult[0].ID;
+                        _newNoteDutyName = _searchResult[0].Name;
+                    }
+                    else
+                    {
+                        _newNoteDutyID = 0;
+                        _newNoteDutyName = "";
+                    }
                 }
                 ImGui.PopFont();
                 DrawHelper.SetTooltip("Adds a new empty note");
@@ -269,7 +301,7 @@ namespace NOTED.Windows
                     ImGui.PushFont(UiBuilder.IconFont);
                     if (ImGui.Button(FontAwesomeIcon.Trash.ToIconString()))
                     {
-                        _deletingNote = true;
+                        _deletingNote = SelectedNote;
                     }
                     ImGui.PopFont();
                     DrawHelper.SetTooltip("Delete");
@@ -376,6 +408,16 @@ namespace NOTED.Windows
                         SelectedNote = duty.Notes.Count > 0 ? duty.Notes[0] : null;
                         NeedsFocus = SelectedNote != null;
                     }
+
+                    if (ImGui.BeginPopupContextItem())
+                    {
+                        if (ImGui.Selectable("Delete"))
+                        {
+                            _deletingDuty = duty;
+                        }
+
+                        ImGui.EndPopup();
+                    }
                 }
             }
             ImGui.EndChild();
@@ -402,6 +444,16 @@ namespace NOTED.Windows
                         }
 
                         ImGui.PopStyleColor();
+
+                        if (ImGui.BeginPopupContextItem())
+                        {
+                            if (ImGui.Selectable("Delete"))
+                            {
+                                _deletingNote = note;
+                            }
+
+                            ImGui.EndPopup();
+                        }
                     }
                 }
             }
@@ -487,6 +539,7 @@ namespace NOTED.Windows
                 ImGui.BeginChild("##DutySearch", new Vector2(width * _scale, 170 * _scale), true);
                 {
                     List<DutyData> list = _newNoteDutyName.Length == 0 ? _duties : _searchResult;
+                    DutyData? selected = null;
 
                     foreach (DutyData data in list)
                     {
@@ -494,7 +547,13 @@ namespace NOTED.Windows
                         {
                             _newNoteDutyName = data.Name;
                             _newNoteDutyID = data.ID;
+                            selected = data;
                         }
+                    }
+
+                    if (selected != null)
+                    {
+                        _searchResult = new() { selected };
                     }
                 }
                 ImGui.EndChild();
