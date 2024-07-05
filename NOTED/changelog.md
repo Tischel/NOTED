@@ -1,3 +1,6 @@
+# 1.3.0.0
+- Added support for Dawntrail and Dalamud API 10.
+
 # 1.2.2.0
 - Added a "No Duty" entry. Notes added to this section will be shown while outside of duties.
 - Duties are now filled automatically when creating a new note while being inside a duty.

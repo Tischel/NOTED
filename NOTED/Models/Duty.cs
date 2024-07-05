@@ -20,7 +20,7 @@ namespace NOTED.Models
 
         public Note? GetActiveNote()
         {
-            PlayerCharacter? player = Plugin.ClientState.LocalPlayer;
+            IPlayerCharacter? player = Plugin.ClientState.LocalPlayer;
             if (player == null) { return null; }
 
             uint jobId = player.ClassJob.Id;

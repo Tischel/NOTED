@@ -40,6 +40,7 @@ namespace NOTED.Helpers
             [JobIDs.NIN] = JobRoles.DPSMelee,
             [JobIDs.SAM] = JobRoles.DPSMelee,
             [JobIDs.RPR] = JobRoles.DPSMelee,
+            [JobIDs.VPR] = JobRoles.DPSMelee,
 
             // ranged phys dps
             [JobIDs.ARC] = JobRoles.DPSRanged,
@@ -54,6 +55,7 @@ namespace NOTED.Helpers
             [JobIDs.SMN] = JobRoles.DPSCaster,
             [JobIDs.RDM] = JobRoles.DPSCaster,
             [JobIDs.BLU] = JobRoles.DPSCaster,
+            [JobIDs.PCT] = JobRoles.DPSCaster,
 
             // crafters
             [JobIDs.CRP] = JobRoles.Crafter,
@@ -102,7 +104,8 @@ namespace NOTED.Helpers
                 JobIDs.DRG,
                 JobIDs.NIN,
                 JobIDs.SAM,
-                JobIDs.RPR
+                JobIDs.RPR,
+                JobIDs.VPR
             },
 
             // ranged phys dps
@@ -123,6 +126,7 @@ namespace NOTED.Helpers
                 JobIDs.SMN,
                 JobIDs.RDM,
                 JobIDs.BLU,
+                JobIDs.PCT
             },
 
             // crafters
@@ -203,6 +207,7 @@ namespace NOTED.Helpers
 
             [JobIDs.NIN] = "NIN",
 
+            [JobIDs.PCT] = "PCT",
             [JobIDs.PGL] = "PGL",
 
             [JobIDs.RDM] = "RDM",
@@ -215,6 +220,8 @@ namespace NOTED.Helpers
             [JobIDs.SMN] = "SMN",
 
             [JobIDs.THM] = "THM",
+
+            [JobIDs.VPR] = "VPR",
 
             [JobIDs.WVR] = "WVR",
 
@@ -257,6 +264,7 @@ namespace NOTED.Helpers
         public const uint NIN = 30;
         public const uint SAM = 34;
         public const uint RPR = 39;
+        public const uint VPR = 41;
 
         public const uint ARC = 5;
         public const uint BRD = 23;
@@ -269,6 +277,7 @@ namespace NOTED.Helpers
         public const uint SMN = 27;
         public const uint RDM = 35;
         public const uint BLU = 36;
+        public const uint PCT = 42;
 
         public const uint CRP = 8;
         public const uint BSM = 9;

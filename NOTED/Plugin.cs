@@ -25,10 +25,10 @@ namespace NOTED
         public static IClientState ClientState { get; private set; } = null!;
         public static ICommandManager CommandManager { get; private set; } = null!;
         public static ICondition Condition { get; private set; } = null!;
-        public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
+        public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
         public static IFramework Framework { get; private set; } = null!;
         public static IGameGui GameGui { get; private set; } = null!;
-        public static UiBuilder UiBuilder { get; private set; } = null!;
+        public static IUiBuilder UiBuilder { get; private set; } = null!;
         public static IDataManager DataManager { get; private set; } = null!;
         public static IKeyState KeyState { get; private set; } = null!;
         public static IPluginLog Logger { get; private set; } = null!;
@@ -55,7 +55,7 @@ namespace NOTED
             IClientState clientState,
             ICommandManager commandManager,
             ICondition condition,
-            DalamudPluginInterface pluginInterface,
+            IDalamudPluginInterface pluginInterface,
             IFramework framwork,
             IDataManager dataManager,
             IGameGui gameGui,
@@ -83,7 +83,7 @@ namespace NOTED
                 AssemblyLocation = Assembly.GetExecutingAssembly().Location;
             }
 
-            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.2.2.0";
+            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.3.0.0";
 
             UiBuilder.Draw += Draw;
             UiBuilder.OpenConfigUi += OpenConfigUi;
@@ -244,8 +244,7 @@ namespace NOTED
         {
             return Condition[ConditionFlag.BoundByDuty] ||
                 Condition[ConditionFlag.BoundByDuty56] ||
-                Condition[ConditionFlag.BoundByDuty95] ||
-                Condition[ConditionFlag.BoundToDuty97];
+                Condition[ConditionFlag.BoundByDuty95];
         }
 
         public static ushort NoDutyID() => ushort.MaxValue;

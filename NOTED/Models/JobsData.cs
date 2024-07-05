@@ -104,7 +104,11 @@ namespace NOTED.Models
 
                 for (int i = 0; i < count; i++)
                 {
-                    if (Map[role][i]) 
+                    if (i >= Map[role].Count)
+                    {
+                        Map[role].Add(false);
+                    }
+                    else if (Map[role][i]) 
                     {
                         uint key = JobsHelper.JobsByRole[role][i];
                         string name = JobsHelper.JobNames[key];

@@ -25,7 +25,7 @@ namespace NOTED.Windows
                 | ImGuiWindowFlags.NoResize
                 | ImGuiWindowFlags.NoScrollWithMouse;
 
-            Size = new Vector2(710, 330);
+            Size = new Vector2(710, 360);
         }
 
         public override void OnOpen()
