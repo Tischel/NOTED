@@ -23,7 +23,7 @@ namespace NOTED.Models
             IPlayerCharacter? player = Plugin.ClientState.LocalPlayer;
             if (player == null) { return null; }
 
-            uint jobId = player.ClassJob.Id;
+            uint jobId = player.ClassJob.RowId;
             Note? firstNote = null;
 
             foreach (Note note in Notes)

@@ -3,7 +3,7 @@ using Dalamud.Interface.Utility;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using NOTED.Helpers;
 using NOTED.Models;
 using System.Collections.Generic;
@@ -41,9 +41,9 @@ namespace NOTED.Windows
             {
                 // Remove duplicated duties and keep the one with the higher id (newer version)
                 _duties = sheet.Where(
-                    row => row.ContentFinderCondition.Value != null &&
-                    row.ContentFinderCondition.Value.Name.ToString().Length > 0 &&
-                    row.RowId != kMaskedCarnivaleID)
+                    row => 
+                        row.ContentFinderCondition.Value.Name.ToString().Length > 0 &&
+                        row.RowId != kMaskedCarnivaleID)
                 .Select(territory => new DutyData(territory))
                 .GroupBy(duty => duty.Name)
                 .Select(duties => duties.MaxBy(duty => duty.ID))
