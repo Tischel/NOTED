@@ -5,5 +5,5 @@
   "Description": "Lets you create notes that are linked to specific duties (they will only show during those duties).\nYou can also tie notes to certain jobs so they only appear when on the right job.",
   "RepoUrl": "https://github.com/Tischel/NOTED",
   "Tags": [ "UI" ],
-  "Changelog": "1.4.0.0\n\n- Added support for Patch 7.1 and Dalamud API 11."
+  "Changelog": "1.5.0.0\n\n- Added support for Patch 7.2 and Dalamud API 12."
 }
