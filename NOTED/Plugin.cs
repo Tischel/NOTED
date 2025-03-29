@@ -160,7 +160,9 @@ namespace NOTED
         {
             if (note == null) { return; }
 
-            if (Settings.Duties.TryGetValue(ClientState.TerritoryType, out Duty? duty) && duty != null)
+            ushort territory = IsInDuty() ? ClientState.TerritoryType : NoDutyID();
+
+            if (Settings.Duties.TryGetValue(territory, out Duty? duty) && duty != null)
             {
                 if (duty.Notes.Contains(note))
                 {
@@ -169,6 +171,10 @@ namespace NOTED
                     _settingsWindow.NeedsFocus = true;
                     _settingsWindow.IsOpen = true;
                 }
+            }
+            else
+            {
+                Logger.Error("Duty is null for TerritoryType {TerritoryType}", territory);
             }
         }
 
