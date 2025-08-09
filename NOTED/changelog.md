@@ -1,4 +1,4 @@
-# 1.5.0.0
+# 1.6.0.0
 - Added support for Patch 7.3 and Dalamud API 13.
 
 # 1.5.0.0
