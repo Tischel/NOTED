@@ -9,7 +9,7 @@ using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using Lumina.Data.Parsing.Uld;
 using NOTED.Helpers;
 using NOTED.Models;
@@ -56,7 +56,7 @@ namespace NOTED
             ICommandManager commandManager,
             ICondition condition,
             IDalamudPluginInterface pluginInterface,
-            IFramework framwork,
+            IFramework framework,
             IDataManager dataManager,
             IGameGui gameGui,
             IKeyState keyState,
@@ -67,7 +67,7 @@ namespace NOTED
             CommandManager = commandManager;
             Condition = condition;
             PluginInterface = pluginInterface;
-            Framework = framwork;
+            Framework = framework;
             DataManager = dataManager;
             GameGui = gameGui;
             UiBuilder = pluginInterface.UiBuilder;
@@ -83,7 +83,7 @@ namespace NOTED
                 AssemblyLocation = Assembly.GetExecutingAssembly().Location;
             }
 
-            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.5.0.0";
+            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.6.0.0";
 
             UiBuilder.Draw += Draw;
             UiBuilder.OpenConfigUi += OpenConfigUi;
