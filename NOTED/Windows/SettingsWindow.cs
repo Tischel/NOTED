@@ -1,7 +1,7 @@
 ﻿using Dalamud.Interface;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Windowing;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
 using NOTED.Helpers;
@@ -41,7 +41,7 @@ namespace NOTED.Windows
             {
                 // Remove duplicated duties and keep the one with the higher id (newer version)
                 _duties = sheet.Where(
-                    row => 
+                    row =>
                         row.ContentFinderCondition.Value.Name.ToString().Length > 0 &&
                         row.RowId != kMaskedCarnivaleID)
                 .Select(territory => new DutyData(territory))
@@ -261,7 +261,7 @@ namespace NOTED.Windows
                     _newNoteTitle = "New Note";
                     _addingNote = true;
                     _needsFocusOnNewNote = true;
-                    
+
                     // set active duty automatically (if any)
                     DutyData? duty = _duties.FirstOrDefault(o => o.ID == Plugin.ClientState.TerritoryType);
                     if (duty != null)
@@ -411,7 +411,7 @@ namespace NOTED.Windows
                         NeedsFocus = SelectedNote != null;
                     }
 
-                    if (ImGui.BeginPopupContextItem())
+                    if (ImGui.BeginPopupContextItem("DeleteContext"))
                     {
                         if (ImGui.Selectable("Delete"))
                         {
@@ -447,7 +447,7 @@ namespace NOTED.Windows
 
                         ImGui.PopStyleColor();
 
-                        if (ImGui.BeginPopupContextItem())
+                        if (ImGui.BeginPopupContextItem("ExportContext"))
                         {
                             if (ImGui.Selectable("Export"))
                             {
@@ -485,10 +485,10 @@ namespace NOTED.Windows
                         NeedsFocus = false;
                     }
                     ImGui.InputTextMultiline(
-                        "##Text", 
-                        ref SelectedNote.Text, 
-                        99999, 
-                        new Vector2(398 * _scale, 428 * _scale), 
+                        "##Text",
+                        ref SelectedNote.Text,
+                        99999,
+                        new Vector2(398 * _scale, 428 * _scale),
                         ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.AllowTabInput
                     );
 
