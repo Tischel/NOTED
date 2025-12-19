@@ -23,6 +23,7 @@ namespace NOTED
     public class Plugin : IDalamudPlugin
     {
         public static IClientState ClientState { get; private set; } = null!;
+        public static IObjectTable ObjectTable { get; private set; } = null!;
         public static ICommandManager CommandManager { get; private set; } = null!;
         public static ICondition Condition { get; private set; } = null!;
         public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
@@ -53,6 +54,7 @@ namespace NOTED
 
         public Plugin(
             IClientState clientState,
+            IObjectTable objectTable,
             ICommandManager commandManager,
             ICondition condition,
             IDalamudPluginInterface pluginInterface,
@@ -64,6 +66,7 @@ namespace NOTED
         )
         {
             ClientState = clientState;
+            ObjectTable = objectTable;
             CommandManager = commandManager;
             Condition = condition;
             PluginInterface = pluginInterface;
@@ -83,7 +86,7 @@ namespace NOTED
                 AssemblyLocation = Assembly.GetExecutingAssembly().Location;
             }
 
-            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.6.0.0";
+            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.7.0.0";
 
             UiBuilder.Draw += Draw;
             UiBuilder.OpenConfigUi += OpenConfigUi;
@@ -230,7 +233,7 @@ namespace NOTED
 
         private void Update(IFramework framework)
         {
-            if (Settings == null || ClientState.LocalPlayer == null) return;
+            if (Settings == null || ObjectTable.LocalPlayer == null) return;
 
             KeyboardHelper.Instance?.Update();
 
@@ -257,7 +260,7 @@ namespace NOTED
 
         private unsafe void Draw()
         {
-            if (Settings == null || ClientState.LocalPlayer == null) return;
+            if (Settings == null || ObjectTable.LocalPlayer == null) return;
 
             // detect territory change
             ushort territory = IsInDuty() ? ClientState.TerritoryType : NoDutyID();
