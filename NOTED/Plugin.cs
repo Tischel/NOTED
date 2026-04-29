@@ -46,7 +46,7 @@ namespace NOTED
         private static JobsDataWindow _jobsDataWindow = null!;
         private static NoteWindow _noteWindow = null!;
 
-        private static ushort _prevTerritoryID = 0;
+        private static uint _prevTerritoryID = 0;
         private static Duty? _activeDuty = null;
         private static bool _forceHide = false;
         private static Note? _prevNote = null;
@@ -86,7 +86,7 @@ namespace NOTED
                 AssemblyLocation = Assembly.GetExecutingAssembly().Location;
             }
 
-            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.7.0.0";
+            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.8.0.0";
 
             UiBuilder.Draw += Draw;
             UiBuilder.OpenConfigUi += OpenConfigUi;
@@ -163,7 +163,7 @@ namespace NOTED
         {
             if (note == null) { return; }
 
-            ushort territory = IsInDuty() ? ClientState.TerritoryType : NoDutyID();
+            uint territory = IsInDuty() ? ClientState.TerritoryType : NoDutyID();
 
             if (Settings.Duties.TryGetValue(territory, out Duty? duty) && duty != null)
             {
@@ -263,7 +263,7 @@ namespace NOTED
             if (Settings == null || ObjectTable.LocalPlayer == null) return;
 
             // detect territory change
-            ushort territory = IsInDuty() ? ClientState.TerritoryType : NoDutyID();
+            uint territory = IsInDuty() ? ClientState.TerritoryType : NoDutyID();
 
             if (_forceCheck || territory != _prevTerritoryID)
             {
